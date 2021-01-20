@@ -1,0 +1,8 @@
+import axios from 'axios'
+
+const customInstance = axios.create({
+  baseURL: 'http://iot.kiswire.com.my:8081'
+})
+customInstance.defaults.headers['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrYXNoYWYiLCJmaXJzdG5hbWUiOiJNdWhhbW1hZCBBa2FzaGFmIiwibGFzdG5hbWUiOiJLaG9tYXJ1ZGluIiwiZW1haWwiOiJha2FzaGFmOTNAZ21haWwuY29tIiwid29ya2dyb3VwIjoiS1NCMDEiLCJhY2Nlc3Nyb2xlIjoiQURNSU4iLCJhY2Nlc3NsZXZlbCI6MSwicGhvdG91cmwiOiJub25lIiwiZXhwIjoxNjExNTM3NzYyfQ.SVWTijofh56ntTcVINKqKiQzSC0SpNlLv6BcOl29RUM'
+
+export default customInstance;

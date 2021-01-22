@@ -1,13 +1,15 @@
-import { Box, Grid, TextField, Button } from '@material-ui/core';
+import { Box, Grid, TextField, Button, withStyles, Paper } from '@material-ui/core';
 import { useState } from 'react';
 import { addToast } from 'react-toast-notifications';
 import { useHistory } from 'react-router-dom';
 import customInstance from '../../../axios.config';
+import styles from '../../Customer/styles';
 
-const AddState = () => {
+const AddState = (props) => {
     // eslint-disable-next-line
     const [stateData, setStateData] = useState({});
     const history = useHistory();
+    const { classes } = props;
 
     const handleSubmit = evt => {
         evt.preventDefault();
@@ -17,43 +19,43 @@ const AddState = () => {
     }
 
     return (
-        <Box>
+        <Paper className={classes.detailForm}>
             <form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs md>
                         <TextField
                             autoComplete="stateid"
                             name="stateid"
-                            variant="outlined"
                             required
                             fullWidth
                             id="stateid"
-                            label="stateid"
+                            label="id"
                             autoFocus
                             onChange={evt => stateData[evt.target.name] = parseInt(evt.target.value)}
                         />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs md={10}>
                         <TextField
                             autoComplete="statename"
                             name="statename"
-                            variant="outlined"
                             required
                             fullWidth
                             id="statename"
-                            label="statename"
+                            label="Name"
                             autoFocus
                             onChange={evt => stateData[evt.target.name] = evt.target.value}
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Button type="submit" variant="contained" color="primary">Send</Button>
-                        <Button type="reset" variant="contained">Reset</Button>
+                    <Grid item xs={12} md={12}>
+                        <Box style={{ textAlign: 'center' }}>
+                            <Button style={{ marginRight: '1rem' }} type="submit" variant="contained" color="primary">Send</Button>
+                            <Button type="reset" variant="contained">Reset</Button>
+                        </Box>
                     </Grid>
                 </Grid>
             </form>
-        </Box>
+        </Paper>
     )
 }
 
-export default AddState;
+export default withStyles(styles)(AddState);

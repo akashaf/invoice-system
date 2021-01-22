@@ -1,12 +1,21 @@
-import { Box, Grid, TextField, Button } from '@material-ui/core';
-import { useState } from 'react';
+import { Box, Grid, TextField, Button, Paper, withStyles, MenuItem } from '@material-ui/core';
+import { useEffect, useState } from 'react';
 import { addToast } from 'react-toast-notifications';
 import { useHistory } from 'react-router-dom';
 import customInstance from '../../../axios.config';
+import styles from '../../Customer/styles';
 
-const AddDistrict = () => {
+const AddDistrict = (props) => {
     const [districtData, setDistrictData] = useState({});
+    const [stateData, setStateData] = useState(null);
     const history = useHistory();
+    const { classes } = props;
+
+    useEffect(() => {
+        customInstance.get('/state')
+            .then(res => setStateData(res.data))
+            .catch(err => console.log(err))
+    }, [])
 
     const handleInput = evt => {
         setDistrictData({ ...districtData, [evt.target.name]: evt.target.value })
@@ -26,55 +35,66 @@ const AddDistrict = () => {
 
     return (
         <Box>
-            <form noValidate onSubmit={handleSubmit}>
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <TextField
-                            autoComplete="districtid"
-                            name="districtid"
-                            variant="outlined"
-                            required
-                            fullWidth
-                            id="districtid"
-                            label="districtid"
-                            autoFocus
-                            onChange={handleIntInput}
-                        />
+            <Paper className={classes.detailForm}>
+                <form noValidate onSubmit={handleSubmit}>
+                    <Grid container spacing={2}>
+                        <Grid item xs>
+                            <TextField
+                                autoComplete="districtid"
+                                name="districtid"
+                                size="small"
+                                required
+                                fullWidth
+                                id="districtid"
+                                label="id"
+                                autoFocus
+                                onChange={handleIntInput}
+                            />
+                        </Grid>
+                        <Grid item xs={10}>
+                            <TextField
+                                autoComplete="districtname"
+                                name="districtname"
+                                size="small"
+                                required
+                                fullWidth
+                                id="districtname"
+                                label="District Name"
+                                autoFocus
+                                onChange={handleInput}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                        {
+                                stateData &&
+                                <TextField
+                                    id="stateid"
+                                    select
+                                    fullWidth
+                                    name="stateid"
+                                    label="State"
+                                    defaultValue={stateData.stateid || ''}
+                                    onChange={handleIntInput}
+                                >
+                                    {stateData.map((state) => (
+                                        <MenuItem key={state.stateid} value={state.stateid}>
+                                            {state.statename}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            }
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <Box style={{ textAlign: 'center' }}>
+                                <Button style={{ marginRight: '1rem' }} type="submit" variant="contained" color="primary">Send</Button>
+                                <Button type="reset" variant="contained">Reset</Button>
+                            </Box>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            autoComplete="stateid"
-                            name="stateid"
-                            variant="outlined"
-                            required
-                            fullWidth
-                            id="stateid"
-                            label="stateid"
-                            autoFocus
-                            onChange={handleIntInput}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            autoComplete="districtname"
-                            name="districtname"
-                            variant="outlined"
-                            required
-                            fullWidth
-                            id="districtname"
-                            label="districtname"
-                            autoFocus
-                            onChange={handleInput}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button type="submit" variant="contained" color="primary">Send</Button>
-                        <Button type="reset" variant="contained">Reset</Button>
-                    </Grid>
-                </Grid>
-            </form>
+                </form>
+            </Paper>
         </Box>
     )
 }
 
-export default AddDistrict;
+export default withStyles(styles)(AddDistrict);

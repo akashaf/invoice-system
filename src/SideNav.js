@@ -10,8 +10,12 @@ const links = [
         path: '/invoice',
     },
     {
-        name: 'CustomerListPage',
+        name: 'CustomerList',
         path: '/customer',
+    },
+    {
+        name: 'AddCustomer',
+        path: '/add-customer',
     },
     {
         name: 'stateList',

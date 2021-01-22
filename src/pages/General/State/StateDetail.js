@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import customInstance from '../../../axios.config';
-import { Box, Grid, TextField, Button } from '@material-ui/core';
+import { Paper, Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, withStyles, Typography } from '@material-ui/core';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import DistrictByState from "./DistrictByState";
+import styles from "../../Customer/styles";
 
 const StateDetail = (props) => {
     const [stateData, setStateData] = useState(null);
     const { addToast } = useToasts();
     const history = useHistory();
+    const { classes } = props;
 
     useEffect(() => {
         queryStateDetail();
@@ -40,6 +42,11 @@ const StateDetail = (props) => {
         setStateData({ ...stateData, [evt.target.name]: newValue })
     }
 
+    const handleCheck = evt => {
+        let newValue = evt.target.checked ? 1 : 0;
+        setStateData({ ...stateData, [evt.target.name]: newValue })
+    }
+
     const deleteState = () => {
         customInstance.delete(`/state/${props.match.params.id}`)
             .then(res => {
@@ -54,114 +61,112 @@ const StateDetail = (props) => {
             {
                 stateData &&
                 <Box>
-                    <form noValidate onSubmit={handleSubmit}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="stateid"
-                                    name="stateid"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="stateid"
-                                    label="stateid"
-                                    defaultValue={stateData.stateid}
-                                    autoFocus
-                                    onChange={handleIntInput}
-                                />
+                    <Paper className={classes.detailForm}>
+                        <form noValidate onSubmit={handleSubmit}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md>
+                                    <TextField
+                                        autoComplete="stateid"
+                                        name="stateid"
+                                        required
+                                        size="small"
+                                        fullWidth
+                                        id="stateid"
+                                        label="id"
+                                        defaultValue={stateData.stateid}
+                                        autoFocus
+                                        onChange={handleIntInput}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={10}>
+                                    <TextField
+                                        autoComplete="statename"
+                                        name="statename"
+                                        required
+                                        size="small"
+                                        fullWidth
+                                        id="statename"
+                                        label="Name"
+                                        defaultValue={stateData.statename}
+                                        autoFocus
+                                        onChange={handleInput}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        autoComplete="createdusername"
+                                        name="createdusername"
+                                        variant="filled"
+                                        disabled
+                                        size="small"
+                                        fullWidth
+                                        id="createdusername"
+                                        label="Created By"
+                                        defaultValue={stateData.createdusername}
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        autoComplete="modifiedusername"
+                                        name="modifiedusername"
+                                        variant="filled"
+                                        disabled
+                                        size="small"
+                                        fullWidth
+                                        id="modifiedusername"
+                                        label="Modified by"
+                                        defaultValue={stateData.modifiedusername}
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        autoComplete="createddate"
+                                        name="createddate"
+                                        variant="filled"
+                                        disabled
+                                        size="small"
+                                        fullWidth
+                                        id="createddate"
+                                        label="Created Date"
+                                        defaultValue={moment(stateData.createddate).format("DD/MM/YYYY")}
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        autoComplete="modifydate"
+                                        name="modifydate"
+                                        variant="filled"
+                                        disabled
+                                        size="small"
+                                        fullWidth
+                                        id="modifydate"
+                                        label="modified Date"
+                                        defaultValue={moment(stateData.modifydate).format("DD/MM/YYYY")}
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={12}>
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={<Switch size="small" checked={stateData.isactive === 1 ? true : false} onChange={handleCheck} name="isactive" id="isactive" />}
+                                        label="is active"
+                                    />
+                                </FormGroup>
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="isactive"
-                                    name="isactive"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="isactive"
-                                    label="isactive"
-                                    defaultValue={stateData.isactive}
-                                    autoFocus
-                                    onChange={handleIntInput}
-                                />
+                                <Grid item xs={12} md={12}>
+                                    <Box style={{ textAlign: 'center' }}>
+                                        <Button style={{ marginRight: '1rem' }} type="submit" variant="contained" color="primary">Send</Button>
+                                        <Button style={{ marginRight: '1rem' }} type="reset" variant="contained">Reset</Button>
+                                        <Button variant="contained" color="secondary" onClick={deleteState}>Delete</Button>
+                                    </Box>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="statename"
-                                    name="statename"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="statename"
-                                    label="statename"
-                                    defaultValue={stateData.statename}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="modifiedusername"
-                                    name="modifiedusername"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="modifiedusername"
-                                    label="modifiedusername"
-                                    defaultValue={stateData.modifiedusername}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="modifiedusername"
-                                    name="modifiedusername"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="modifiedusername"
-                                    label="modifiedusername"
-                                    defaultValue={stateData.modifiedusername}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="createddate"
-                                    name="createddate"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="createddate"
-                                    label="createddate"
-                                    defaultValue={moment(stateData.createddate).format("DD/MM/YYYY")}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="modifydate"
-                                    name="modifydate"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="modifydate"
-                                    label="modifydate"
-                                    defaultValue={moment(stateData.modifydate).format("DD/MM/YYYY")}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary">Send</Button>
-                                <Button type="reset" variant="contained">Reset</Button>
-                                <Button variant="contained" color="secondary" onClick={deleteState}>Delete</Button>
-                            </Grid>
-                        </Grid>
-                    </form>
-                    <hr />
+                        </form>
+                    </Paper>
+                    <Typography variant="h2" gutterBottom>List of District</Typography>
                     <DistrictByState {...props} />
                 </Box>
             }
@@ -169,4 +174,4 @@ const StateDetail = (props) => {
     )
 }
 
-export default StateDetail;
+export default withStyles(styles)(StateDetail);

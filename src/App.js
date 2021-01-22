@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import InvoiceList from './pages/Invoice/InvoiceList';
-import CustomerListPage from './pages/Customer/CustomerListPage';
-import UpdateCustomerDetailPage from './pages/Customer/UpdateCustomerDetailPage';
+import CustomerList from './pages/Customer/CustomerList';
+import CustomerDetail from './pages/Customer/CustomerDetail';
 import SideNav from './SideNav';
 import { Grid } from '@material-ui/core';
 import InvoiceDetail from './pages/Invoice/InvoiceDetail';
@@ -12,18 +12,20 @@ import AddState from './pages/General/State/AddState';
 import DistrictList from './pages/General/District/DistrictList';
 import DistrictDetail from './pages/General/District/DistrictDetail';
 import AddDistrict from './pages/General/District/AddDistrict';
+import AddCustomer from './pages/Customer/AddCustomer';
 const App = () => {
   return (
       <Router>
         <Grid container>
-          <Grid item xs={2}>
+          <Grid item xs={12} md={2}>
             <SideNav />
           </Grid>
-          <Grid item xs={10}>
+          <Grid item xs={12} md={10}>
             <Switch>
               <Route exact path="/" component={InvoiceList} />
-              <Route path="/customer" component={CustomerListPage} />
-              <Route path="/customer-detail/:id" component={UpdateCustomerDetailPage} />
+              <Route path="/customer" component={CustomerList} />
+              <Route path="/add-customer" component={AddCustomer} />
+              <Route path="/customer-detail/:id" component={CustomerDetail} />
               <Route path="/invoice" component={AddInvoice} />
               <Route path="/invoice-detail/:id" component={InvoiceDetail} />
               <Route path="/stateList" component={StateList} />

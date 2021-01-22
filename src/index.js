@@ -1,15 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import reportWebVitals from './reportWebVitals';
 import App from './App.js';
 import { ToastProvider } from 'react-toast-notifications';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+
+const theme = createMuiTheme({
+  typography: {
+    fontSize: 12
+  }
+});
 
 ReactDOM.render(
   <ToastProvider>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    {/* <React.StrictMode> */}
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    {/* </React.StrictMode> */}
   </ToastProvider>,
   document.getElementById('root')
 );

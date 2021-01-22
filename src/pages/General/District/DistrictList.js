@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import customInstance from '../../../axios.config';
-import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody } from '@material-ui/core';
+import { withStyles, Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import styles from '../../Customer/styles';
 
 const DistrictList = (props) => {
   const [districtList, setDistrictList] = useState([]);
   const history = useHistory();
+  const { classes } = props;
 
   useEffect(() => {
     queryDistrictList();
@@ -35,54 +37,35 @@ const DistrictList = (props) => {
       }
       modifiedDistrictList.push(tempData);
     });
+
+    const tableHeaders = [
+      'district id',
+      'district name',
+      'state id',
+      'is_active',
+      'created by',
+      'modified by',
+      'created date',
+      'modified date'
+    ]
+
     return (
-      <Table>
+      <Table size="small">
         <TableHead>
-          {
-            modifiedDistrictList.slice(0, 1).map(modifiedDistrictKey => (
-              <TableRow key="0">
-                {
-                  Object.keys(modifiedDistrictKey).map((modifiedDistrict, key) => (
-                    <TableCell key={key}>
-                      <Typography>
-                        {modifiedDistrict}
-                      </Typography>
-                    </TableCell>
-                  ))
-                }
-              </TableRow>
-            ))
-          }
+        <TableRow className={classes.tableHeader}>
+            {
+              tableHeaders.map(tableHeader => (
+                <TableCell key={tableHeader}>
+                  <Typography className={classes.tableHeaderTypography}>{tableHeader}</Typography>
+                </TableCell>
+              ))
+            }
+          </TableRow>
         </TableHead>
         <TableBody>
           {
             modifiedDistrictList.map((modifiedDistrict, key) => (
-              <TableRow key={key} style={{ cursor: 'pointer' }} onClick={() => history.push(`/district-detail/${modifiedDistrict.districtid}`)}>
-                <TableCell>
-                  <Typography>
-                    {modifiedDistrict.createddate}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography>
-                    {modifiedDistrict.createdusername}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography>
-                    {modifiedDistrict.isactive}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography>
-                    {modifiedDistrict.modifiedusername}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography>
-                    {modifiedDistrict.modifydate}
-                  </Typography>
-                </TableCell>
+              <TableRow hover key={key} style={{ cursor: 'pointer' }} onClick={() => history.push(`/district-detail/${modifiedDistrict.districtid}`)}>
                 <TableCell>
                   <Typography>
                     {modifiedDistrict.districtid}
@@ -96,6 +79,31 @@ const DistrictList = (props) => {
                 <TableCell>
                   <Typography>
                     {modifiedDistrict.stateid}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography>
+                    {modifiedDistrict.isactive}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography>
+                    {modifiedDistrict.createdusername}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography>
+                    {modifiedDistrict.modifiedusername}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography>
+                    {modifiedDistrict.createddate}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography>
+                    {modifiedDistrict.modifydate}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -115,4 +123,4 @@ const DistrictList = (props) => {
   )
 }
 
-export default DistrictList;
+export default withStyles(styles)(DistrictList);

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { Save, RotateLeft, Delete } from '@material-ui/icons';
 import customInstance from '../../axios.config';
-import { withStyles, Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, Paper, MenuItem } from '@material-ui/core';
+import { withStyles, Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, Paper, MenuItem, Typography } from '@material-ui/core';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import styles from './styles';
+import SectionHeader from "../General/SectionHeader";
 
 const CustomerDetail = (props) => {
     const [customerData, setCustomerData] = useState(null);
@@ -33,6 +35,9 @@ const CustomerDetail = (props) => {
 
     const handleSubmit = evt => {
         evt.preventDefault();
+        if (!evt.target.checkValidity()) {
+            return;
+        }
         customInstance.put('/customer', customerData)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true })
@@ -65,17 +70,19 @@ const CustomerDetail = (props) => {
 
     return (
         <Box>
+            <SectionHeader data="Customer Detail" />
             {
                 customerData &&
                 <Paper className={classes.detailForm}>
-                    <form noValidate onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md>
                                 <TextField
                                     size="small"
                                     autoComplete="custid"
                                     name="custid"
-                                    required
+                                    disabled
+                                    variant="filled"
                                     fullWidth
                                     id="custid"
                                     label="id"
@@ -265,9 +272,39 @@ const CustomerDetail = (props) => {
                             </Grid>
                             <Grid item xs={12} md={12}>
                                 <Box style={{ textAlign: 'center' }}>
-                                    <Button style={{ marginRight: '1rem' }} type="submit" variant="contained" color="primary">Send</Button>
-                                    <Button style={{ marginRight: '1rem' }} type="reset" variant="contained">Reset</Button>
-                                    <Button variant="contained" color="secondary" onClick={deleteCustomer}>Delete</Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    style={{ marginRight: '1rem' }}
+                                    type="submit"
+                                    startIcon={<Save />}
+                                >
+                                    <Typography>
+                                    Save
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    style={{ marginRight: '1rem' }}
+                                    variant="contained"
+                                    size="small"
+                                    startIcon={<RotateLeft />}
+                                >
+                                    <Typography>
+                                    Reset
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="secondary"
+                                    startIcon={<Delete />}
+                                    onClick={deleteCustomer}
+                                >
+                                    <Typography>
+                                    Delete
+                                    </Typography>
+                                </Button>
                                 </Box>
                             </Grid>
                         </Grid>

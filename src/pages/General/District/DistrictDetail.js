@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { Save, RotateLeft, Delete } from '@material-ui/icons';
 import customInstance from '../../../axios.config';
-import { Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, Paper, withStyles, MenuItem } from '@material-ui/core';
+import { Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, Paper, withStyles, MenuItem, Typography } from '@material-ui/core';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import styles from "../../Customer/styles";
+import SectionHeader from "../SectionHeader";
 
 const DistrictDetail = (props) => {
     const [districtData, setDistrictData] = useState(null);
@@ -29,6 +31,9 @@ const DistrictDetail = (props) => {
 
     const handleSubmit = evt => {
         evt.preventDefault();
+        if (!evt.target.checkValidity()) {
+            return;
+        }
         customInstance.put('/district', districtData)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true })
@@ -61,17 +66,19 @@ const DistrictDetail = (props) => {
 
     return (
         <Box>
+            <SectionHeader data="District Detail" />
             {
                 districtData &&
                 <Paper className={classes.detailForm}>
-                    <form noValidate onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
                             <Grid item xs>
                                 <TextField
                                     autoComplete="districtid"
                                     name="districtid"
                                     size="small"
-                                    required
+                                    disabled
+                                    variant="filled"
                                     fullWidth
                                     id="districtid"
                                     label="District id"
@@ -178,9 +185,39 @@ const DistrictDetail = (props) => {
                             </Grid>
                             <Grid item xs={12} md={12}>
                                 <Box style={{ textAlign: 'center' }}>
-                                    <Button style={{ marginRight: '1rem' }} type="submit" variant="contained" color="primary">Send</Button>
-                                    <Button style={{ marginRight: '1rem' }} type="reset" variant="contained">Reset</Button>
-                                    <Button variant="contained" color="secondary" onClick={deleteDistrict}>Delete</Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    style={{ marginRight: '1rem' }}
+                                    type="submit"
+                                    startIcon={<Save />}
+                                >
+                                    <Typography>
+                                    Save
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    style={{ marginRight: '1rem' }}
+                                    variant="contained"
+                                    size="small"
+                                    startIcon={<RotateLeft />}
+                                >
+                                    <Typography>
+                                    Reset
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="secondary"
+                                    startIcon={<Delete />}
+                                    onClick={deleteDistrict}
+                                >
+                                    <Typography>
+                                    Delete
+                                    </Typography>
+                                </Button>
                                 </Box>
                             </Grid>
                         </Grid>

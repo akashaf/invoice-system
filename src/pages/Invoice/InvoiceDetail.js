@@ -1,28 +1,80 @@
 import { useEffect, useState } from "react";
+import { Save, RotateLeft, Delete } from '@material-ui/icons';
 import customInstance from '../../axios.config';
-import { Box, Grid, TextField, Button } from '@material-ui/core';
+import { Box, withStyles, Typography, Grid, TextField, Button, MenuItem, Paper } from '@material-ui/core';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
+import styles from "../Customer/styles";
+import AddInvoiceItem from "./Item/AddInvoiceItem";
 
 const InvoiceDetail = (props) => {
     const [invoiceData, setInvoiceData] = useState(null);
+    const [customerData, setCustomerData] = useState(null);
+    const [customerDetailData, setCustomerDetailData] = useState(null);
+    const [stateDetailData, setStateDetailData] = useState(null);
+    const [districtDetailData, setDistrictDetailData] = useState(null);
     const { addToast } = useToasts();
     const history = useHistory();
+    const { classes } = props;
 
     useEffect(() => {
         queryInvoiceDetail();
+        customInstance.get('/customer')
+            .then(customer => {
+                setCustomerData(customer.data);
+            })
+            .catch(err => console.log(err))
         // eslint-disable-next-line
     }, [setInvoiceData])
 
     const queryInvoiceDetail = () => {
         customInstance.get(`/invoice/${props.match.params.id}`)
-            .then(res => { setInvoiceData(res.data); })
+            .then(res => {
+                setInvoiceData(res.data);
+                customInstance.get(`/customer/${res.data.custid}`)
+                    .then(customer => {
+                        setCustomerDetailData(customer.data);
+                        customInstance.get(`/state/${customer.data.mailingstate}`)
+                            .then(state => {
+                                setStateDetailData(state.data);
+                                customInstance.get(`/district/${customer.data.mailingdistrict}`)
+                                    .then(district => {
+                                        setDistrictDetailData(district.data);
+                                    })
+                                    .catch(err => console.log(err))
+                            })
+                            .catch(err => console.log(err))
+                    })
+                    .catch(err => console.log(err))
+            })
+            .catch(err => console.log(err))
+    }
+
+    const handleCustomerData = evt => {
+        setInvoiceData({ ...invoiceData, [evt.target.name]: evt.target.value })
+        customInstance.get(`/customer/${evt.target.value}`)
+            .then(customer => {
+                setCustomerDetailData(customer.data)
+                customInstance.get(`/state/${customer.data.mailingstate}`)
+                    .then(customerDetail => {
+                        setStateDetailData(customerDetail.data);
+                        customInstance.get(`/district/${customer.data.mailingdistrict}`)
+                            .then(districtDetail => {
+                                setDistrictDetailData(districtDetail.data);
+                            })
+                            .catch(err => console.log(err))
+                    })
+                    .catch(err => console.log(err))
+            })
             .catch(err => console.log(err))
     }
 
     const handleSubmit = evt => {
         evt.preventDefault();
+        if (!evt.target.checkValidity()) {
+            return;
+        }
         customInstance.put('/invoice', invoiceData)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true })
@@ -51,147 +103,105 @@ const InvoiceDetail = (props) => {
     return (
         <Box>
             {
-                invoiceData &&
+                invoiceData && customerDetailData && stateDetailData && districtDetailData &&
                 <Box>
-                    <form noValidate onSubmit={handleSubmit}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="invono"
-                                    name="invono"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="invono"
-                                    label="invono"
-                                    defaultValue={invoiceData.invono}
-                                    autoFocus
-                                    onChange={handleIntInput}
-                                />
+                    <form onSubmit={handleSubmit}>
+                        <Typography variant="h3" gutterBottom>Invoice</Typography>
+                        <Paper className={classes.detailForm} style={{ marginBottom: '1rem' }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={12}>
+                                    <Box>
+                                        <Typography gutterBottom><b>TO</b></Typography>
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            name="custid"
+                                            defaultValue={invoiceData.custid || ''}
+                                            onChange={handleCustomerData}
+                                        >
+                                            {customerData.map((customer) => (
+                                                <MenuItem key={customer.custid} value={customer.custid}>
+                                                    {customer.custname}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        <Typography>{customerDetailData.mailingaddr1},</Typography>
+                                        <Typography>{customerDetailData.mailingaddr2},</Typography>
+                                        <Typography>{customerDetailData.mailingpostcode}, {districtDetailData.districtname},</Typography>
+                                        <Typography>{stateDetailData.statename}</Typography>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} md={12}>
+                                    <Box>
+                                        <Box>
+                                            <TextField fullWidth defaultValue={invoiceData.invono} disabled variant="filled" name="invono" label="Invoice No" />
+                                        </Box>
+                                        <Box>
+                                            <TextField fullWidth defaultValue={invoiceData.lotno} onChange={handleInput} name="lotno" label="Lot No" />
+                                        </Box>
+                                        <Box>
+                                            <TextField fullWidth defaultValue={invoiceData.buildup} onChange={handleIntInput} name="buildup" label="Build up" />
+                                        </Box>
+                                        <Box>
+                                            <TextField fullWidth
+                                                size="small"
+                                                name="duedate"
+                                                label="Due Date"
+                                                type="date"
+                                                defaultValue={moment().format("YYYY-MM-DD")}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                onChange={evt => setInvoiceData({ ...invoiceData, [evt.target.name]: parseInt(moment(evt.target.value).format('x')) })}
+                                            />
+                                        </Box>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} md={12}>
+                                    <Box style={{ textAlign: 'center' }}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="small"
+                                            style={{ marginRight: '1rem' }}
+                                            type="submit"
+                                            startIcon={<Save />}
+                                        >
+                                            <Typography>
+                                                Save
+                                        </Typography>
+                                        </Button>
+                                        <Button
+                                            style={{ marginRight: '1rem' }}
+                                            variant="contained"
+                                            size="small"
+                                            startIcon={<RotateLeft />}
+                                        >
+                                            <Typography>
+                                                Reset
+                                        </Typography>
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            color="secondary"
+                                            startIcon={<Delete />}
+                                            onClick={deleteInvoice}
+                                        >
+                                            <Typography>
+                                                Delete
+                                        </Typography>
+                                        </Button>
+                                    </Box>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="custid"
-                                    name="custid"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="custid"
-                                    label="custid"
-                                    defaultValue={invoiceData.custid}
-                                    autoFocus
-                                    onChange={handleIntInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="buildup"
-                                    name="buildup"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="buildup"
-                                    label="buildup"
-                                    defaultValue={invoiceData.buildup}
-                                    autoFocus
-                                    onChange={handleIntInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="createdusername"
-                                    name="createdusername"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="createdusername"
-                                    label="createdusername"
-                                    defaultValue={invoiceData.createdusername}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="modifiedusername"
-                                    name="modifiedusername"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="modifiedusername"
-                                    label="modifiedusername"
-                                    defaultValue={invoiceData.modifiedusername}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="lotno"
-                                    name="lotno"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="lotno"
-                                    label="lotno"
-                                    defaultValue={invoiceData.lotno}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="modifydate"
-                                    name="modifydate"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="modifydate"
-                                    label="modifydate"
-                                    defaultValue={moment(invoiceData.modifydate).format("DD/MM/YYYY")}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="createddate"
-                                    name="createddate"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="createddate"
-                                    label="createddate"
-                                    defaultValue={moment(invoiceData.createddate).format("DD/MM/YYYY")}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoComplete="invodate"
-                                    name="invodate"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="invodate"
-                                    label="invodate"
-                                    defaultValue={moment(invoiceData.invodate).format("DD/MM/YYYY")}
-                                    autoFocus
-                                    onChange={handleInput}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary">Send</Button>
-                                <Button type="reset" variant="contained">Reset</Button>
-                                <Button variant="contained" color="secondary" onClick={deleteInvoice}>Delete</Button>
-                            </Grid>
-                        </Grid>
+                        </Paper>
                     </form>
+                    <AddInvoiceItem id={invoiceData.invono} />
                 </Box>
             }
         </Box>
     )
 }
 
-export default InvoiceDetail;
+export default withStyles(styles)(InvoiceDetail);

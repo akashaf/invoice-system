@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import customInstance from '../../axios.config';
-import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody } from '@material-ui/core';
+import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody, withStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import styles from '../Customer/styles';
+import SectionHeader from '../General/SectionHeader';
 
 const InvoiceList = (props) => {
   const [invoiceList, setInvoiceList] = useState([]);
   const history = useHistory();
+  const { classes } = props;
 
   useEffect(() => {
     queryInvoiceList();
@@ -35,29 +38,35 @@ const InvoiceList = (props) => {
       }
       modifiedInvoiceList.push(tempData);
     });
+
+    const tableHeaders = [
+      'invoice no',
+      'invoice date',
+      'Lot No',
+      'Build up',
+      'Customer ID',
+      'created by',
+      'modified by',
+      'created date',
+      'modified date'
+    ]
     return (
-      <Table>
+      <Table size="small">
         <TableHead>
-          {
-            modifiedInvoiceList.slice(0, 1).map(modifiedInvoiceKey => (
-              <TableRow key="0">
-                {
-                  Object.keys(modifiedInvoiceKey).map((modifiedInvoice, key) => (
-                    <TableCell key={key}>
-                      <Typography>
-                        {modifiedInvoice}
-                      </Typography>
-                    </TableCell>
-                  ))
-                }
-              </TableRow>
-            ))
-          }
+        <TableRow className={classes.tableHeader}>
+            {
+              tableHeaders.map(tableHeader => (
+                <TableCell key={tableHeader}>
+                  <Typography className={classes.tableHeaderTypography}>{tableHeader}</Typography>
+                </TableCell>
+              ))
+            }
+          </TableRow>
         </TableHead>
         <TableBody>
           {
             modifiedInvoiceList.map((modifiedInvoice, key) => (
-              <TableRow key={key} style={{ cursor: 'pointer' }} onClick={() => history.push(`/invoice-detail/${modifiedInvoice.invono}`)}>
+              <TableRow hover key={key} style={{ cursor: 'pointer' }} onClick={() => history.push(`/invoice/${modifiedInvoice.invono}`)}>
                 <TableCell>
                   <Typography>
                     {modifiedInvoice.invono}
@@ -113,6 +122,7 @@ const InvoiceList = (props) => {
 
   return (
     <Box>
+      <SectionHeader data="Invoices" />
       <TableContainer>
         {list()}
       </TableContainer>
@@ -120,4 +130,4 @@ const InvoiceList = (props) => {
   )
 }
 
-export default InvoiceList;
+export default withStyles(styles)(InvoiceList);

@@ -1,3 +1,4 @@
+import { Box, Divider, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 const links = [
@@ -32,23 +33,24 @@ const links = [
     {
         name: 'AddDistrict',
         path: '/add-district',
-    },
+    }
 ]
 
-const SideNav = () =>  {
-    return(
+const SideNav = () => {
+    return (
         <div>
-            <nav>
-                <ul>
-                    {
-                        links.map(link => (
-                            <li key={link.path}>
-                                <Link to={link.path}>{link.name}</Link>
-                            </li>
-                        ))
-                    }
-                </ul>
-            </nav>
+            {
+                links.map(link => (
+                    <Box key={link.path}>
+                        <Box style={{ margin: '.5rem' }}>
+                            <Typography>
+                                <Link to={link.path} style={{ textDecoration: 'none', cursor: 'pointer' }}>{link.name}</Link>
+                            </Typography>
+                        </Box>
+                        <Divider />
+                    </Box>
+                ))
+            }
         </div>
     )
 }

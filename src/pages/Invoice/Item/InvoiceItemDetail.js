@@ -1,28 +1,27 @@
-import { useEffect, useState } from "react";
+import { Box, Button, Grid, Paper, TextField, Typography, withStyles } from "@material-ui/core";
 import { Save, RotateLeft, Delete } from '@material-ui/icons';
+import { useEffect, useState } from "react";
+import SectionHeader from "../../General/SectionHeader";
 import customInstance from '../../../axios.config';
-import { Paper, Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, withStyles, Typography } from '@material-ui/core';
-import { useToasts } from 'react-toast-notifications';
-import moment from 'moment';
-import { useHistory } from 'react-router-dom';
-import DistrictByState from "./DistrictByState";
 import styles from "../../Customer/styles";
-import SectionHeader from "../SectionHeader";
+import moment from 'moment';
+import { useToasts } from 'react-toast-notifications';
+import { useHistory } from 'react-router-dom';
 
-const StateDetail = (props) => {
-    const [stateData, setStateData] = useState(null);
+const InvoiceItemDetail = (props) => {
+    const [invoiceItemDetailData, setInvoiceItemDetailData ] = useState(null);
+    const { classes } = props;
     const { addToast } = useToasts();
     const history = useHistory();
-    const { classes } = props;
 
     useEffect(() => {
-        queryStateDetail();
+        queryInvoiceItemDetail();
         // eslint-disable-next-line
-    }, [setStateData])
+    },[])
 
-    const queryStateDetail = () => {
-        customInstance.get(`/state/${props.match.params.id}`)
-            .then(res => { setStateData(res.data); })
+    const queryInvoiceItemDetail = () => {
+        customInstance.get(`/invoiceitem/${props.match.params.id}/${props.match.params.itemID}`)
+            .then(res => setInvoiceItemDetailData(res.data))
             .catch(err => console.log(err))
     }
 
@@ -31,86 +30,95 @@ const StateDetail = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.put('/state', stateData)
+        customInstance.put('/invoiceitem', invoiceItemDetailData)
             .then(res => {
-                addToast('Saved Successfully', { appearance: 'success', autoDismiss: true })
+                addToast('Saved Successfully', { appearance: 'success', autoDismiss: true });
+                history.goBack();
             })
             .catch(err => addToast(err.message, { appearance: 'error' }))
     }
 
     const handleInput = evt => {
-        setStateData({ ...stateData, [evt.target.name]: evt.target.value })
+        setInvoiceItemDetailData({ ...invoiceItemDetailData, [evt.target.name]: evt.target.value })
     }
 
     const handleIntInput = evt => {
         let newValue = evt.target.value ? parseInt(evt.target.value) : '';
-        setStateData({ ...stateData, [evt.target.name]: newValue })
+        setInvoiceItemDetailData({ ...invoiceItemDetailData, [evt.target.name]: newValue })
     }
 
-    const handleCheck = evt => {
-        let newValue = evt.target.checked ? 1 : 0;
-        setStateData({ ...stateData, [evt.target.name]: newValue })
-    }
-
-    const deleteState = () => {
-        customInstance.delete(`/state/${props.match.params.id}`)
+    const deleteInvoiceItem = () => {
+        customInstance.delete(`/invoiceitem/${props.match.params.id}/${props.match.params.itemID}`)
             .then(res => {
                 addToast('Delete Successfully', { appearance: 'success', autoDismiss: true });
-                history.push('/stateList');
+                history.goBack();
             })
             .catch(err => addToast(err.message, { appearance: 'error' }))
     }
 
-    return (
+    return(
         <Box>
-            <SectionHeader data="State Detail" />
+            <SectionHeader data="Invoice Item Detail" />
             {
-                stateData &&
+                invoiceItemDetailData &&
                 <Box>
                     <Paper className={classes.detailForm}>
-                        <form onSubmit={handleSubmit}>
+                        <form noValidate onSubmit={handleSubmit}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md>
                                     <TextField
-                                        autoComplete="stateid"
-                                        name="stateid"
-                                        disabled
-                                        variant="filled"
+                                        autoComplete="invoseq"
+                                        name="invoseq"
+                                        required
                                         size="small"
                                         fullWidth
-                                        id="stateid"
+                                        id="invoseq"
                                         label="id"
-                                        defaultValue={stateData.stateid}
+                                        defaultValue={invoiceItemDetailData.invoseq}
                                         autoFocus
                                         onChange={handleIntInput}
                                     />
                                 </Grid>
                                 <Grid item xs={12} md={10}>
                                     <TextField
-                                        autoComplete="statename"
-                                        name="statename"
+                                        autoComplete="itemdesc"
+                                        name="itemdesc"
                                         required
                                         size="small"
                                         fullWidth
-                                        id="statename"
-                                        label="Name"
-                                        defaultValue={stateData.statename}
+                                        id="itemdesc"
+                                        label="Item Description"
+                                        defaultValue={invoiceItemDetailData.itemdesc}
                                         autoFocus
                                         onChange={handleInput}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid item xs={12} md={4}>
                                     <TextField
-                                        autoComplete="createdusername"
-                                        name="createdusername"
-                                        variant="filled"
-                                        disabled
+                                        autoComplete="amountrm"
+                                        name="amountrm"
+                                        required
                                         size="small"
                                         fullWidth
-                                        id="createdusername"
-                                        label="Created By"
-                                        defaultValue={stateData.createdusername}
+                                        id="amountrm"
+                                        label="Amount (RM)"
+                                        defaultValue={invoiceItemDetailData.amountrm}
                                         autoFocus
+                                        onChange={handleIntInput}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md>
+                                <TextField
+                                        size="small"
+                                        fullWidth
+                                        name="duedate"
+                                        label="Due Date"
+                                        type="date"
+                                        defaultValue={moment().format("YYYY-MM-DD")}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        onChange={evt => setInvoiceItemDetailData({ ...invoiceItemDetailData, [evt.target.name]: parseInt(moment(evt.target.value).format('x')) })}
                                     />
                                 </Grid>
                                 <Grid item xs={12} md={6}>
@@ -122,22 +130,8 @@ const StateDetail = (props) => {
                                         size="small"
                                         fullWidth
                                         id="modifiedusername"
-                                        label="Modified by"
-                                        defaultValue={stateData.modifiedusername}
-                                        autoFocus
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField
-                                        autoComplete="createddate"
-                                        name="createddate"
-                                        variant="filled"
-                                        disabled
-                                        size="small"
-                                        fullWidth
-                                        id="createddate"
-                                        label="Created Date"
-                                        defaultValue={moment(stateData.createddate).format("DD/MM/YYYY")}
+                                        label="Modified Name"
+                                        defaultValue={invoiceItemDetailData.modifiedusername}
                                         autoFocus
                                     />
                                 </Grid>
@@ -150,19 +144,39 @@ const StateDetail = (props) => {
                                         size="small"
                                         fullWidth
                                         id="modifydate"
-                                        label="modified Date"
-                                        defaultValue={moment(stateData.modifydate).format("DD/MM/YYYY")}
+                                        label="Modified Date"
+                                        defaultValue={moment(invoiceItemDetailData.modifydate).format('DD/MM/YYYY')}
                                         autoFocus
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={12}>
-                                <FormGroup>
-                                    <FormControlLabel
-                                        control={<Switch size="small" checked={stateData.isactive === 1 ? true : false} onChange={handleCheck} name="isactive" id="isactive" />}
-                                        label="is active"
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        autoComplete="createdusername"
+                                        name="createdusername"
+                                        variant="filled"
+                                        disabled
+                                        size="small"
+                                        fullWidth
+                                        id="createdusername"
+                                        label="Created by"
+                                        defaultValue={invoiceItemDetailData.createdusername}
+                                        autoFocus
                                     />
-                                </FormGroup>
-                            </Grid>
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        autoComplete="createddate"
+                                        name="createddate"
+                                        disabled
+                                        variant="filled"
+                                        size="small"
+                                        fullWidth
+                                        id="createddate"
+                                        label="id"
+                                        defaultValue={invoiceItemDetailData.createddate}
+                                        autoFocus
+                                    />
+                                </Grid>
                                 <Grid item xs={12} md={12}>
                                     <Box style={{ textAlign: 'center' }}>
                                     <Button
@@ -192,7 +206,7 @@ const StateDetail = (props) => {
                                     size="small"
                                     color="secondary"
                                     startIcon={<Delete />}
-                                    onClick={deleteState}
+                                    onClick={deleteInvoiceItem}
                                 >
                                     <Typography>
                                     Delete
@@ -203,11 +217,10 @@ const StateDetail = (props) => {
                             </Grid>
                         </form>
                     </Paper>
-                    <DistrictByState {...props} />
                 </Box>
             }
         </Box>
     )
 }
 
-export default withStyles(styles)(StateDetail);
+export default withStyles(styles)(InvoiceItemDetail);

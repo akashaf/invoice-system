@@ -4,6 +4,7 @@ import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table,
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import styles from '../../Customer/styles';
+import SectionHeader from '../SectionHeader';
 
 const StateList = (props) => {
   const [stateList, setStateList] = useState([]);
@@ -107,6 +108,7 @@ const StateList = (props) => {
 
   return (
     <Box>
+      <SectionHeader data="List of State" />
       <TableContainer>
         {list()}
       </TableContainer>

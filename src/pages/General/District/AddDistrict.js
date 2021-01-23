@@ -1,9 +1,11 @@
-import { Box, Grid, TextField, Button, Paper, withStyles, MenuItem } from '@material-ui/core';
+import { Box, Grid, TextField, Button, Paper, withStyles, MenuItem, Typography } from '@material-ui/core';
+import { Save, RotateLeft } from '@material-ui/icons';
 import { useEffect, useState } from 'react';
 import { addToast } from 'react-toast-notifications';
 import { useHistory } from 'react-router-dom';
 import customInstance from '../../../axios.config';
 import styles from '../../Customer/styles';
+import SectionHeader from '../SectionHeader';
 
 const AddDistrict = (props) => {
     const [districtData, setDistrictData] = useState({});
@@ -28,6 +30,9 @@ const AddDistrict = (props) => {
 
     const handleSubmit = evt => {
         evt.preventDefault();
+        if (!evt.target.checkValidity()) {
+            return;
+        }
         customInstance.post('/district', districtData)
             .then(() => history.push('/districtList'))
             .catch(err => addToast(err.message, { appearance: 'error', autoDismiss: true }))
@@ -35,8 +40,9 @@ const AddDistrict = (props) => {
 
     return (
         <Box>
+            <SectionHeader data="New District" />
             <Paper className={classes.detailForm}>
-                <form noValidate onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs>
                             <TextField
@@ -86,8 +92,27 @@ const AddDistrict = (props) => {
                         </Grid>
                         <Grid item xs={12} md={12}>
                             <Box style={{ textAlign: 'center' }}>
-                                <Button style={{ marginRight: '1rem' }} type="submit" variant="contained" color="primary">Send</Button>
-                                <Button type="reset" variant="contained">Reset</Button>
+                            <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    style={{ marginRight: '1rem' }}
+                                    type="submit"
+                                    startIcon={<Save />}
+                                >
+                                    <Typography>
+                                    Save
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    startIcon={<RotateLeft />}
+                                >
+                                    <Typography>
+                                    Reset
+                                    </Typography>
+                                </Button>
                             </Box>
                         </Grid>
                     </Grid>

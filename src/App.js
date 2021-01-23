@@ -23,6 +23,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import GenerateInvoice from './pages/Invoice/GenerateInvoice';
+import InvoiceListingWithItem from './pages/Invoice/InvoiceListingWithItem';
 
 const drawerWidth = 240;
 
@@ -94,6 +95,7 @@ const App = () => {
               <Route path="/add-district" component={AddDistrict} />
               <Route path="/districtList" component={DistrictList} />
               <Route path="/district-detail/:id" component={DistrictDetail} />
+              <Route path="/invoice-listing-with-item" component={InvoiceListingWithItem} />
             </Switch>
           </Box>
         </Box>

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import customInstance from '../../../axios.config';
-import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody, withStyles } from '@material-ui/core';
+import { Grid, Button, Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody, withStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import styles from '../../Customer/styles';
 import SectionHeader from '../SectionHeader';
+import AddIcon from '@material-ui/icons/Add';
 
 const StateList = (props) => {
   const [stateList, setStateList] = useState([]);
@@ -108,7 +109,26 @@ const StateList = (props) => {
 
   return (
     <Box>
-      <SectionHeader data="List of State" />
+      <Grid container>
+        <Grid item xs>
+          <SectionHeader data="List of State" />
+        </Grid>
+        <Grid item xs>
+          <Box style={{ textAlign: 'right' }}>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => history.push('/add-state')}
+            >
+              <Typography>
+                New State
+              </Typography>
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
       <TableContainer>
         {list()}
       </TableContainer>

@@ -75,7 +75,7 @@ const AddInvoice = (props) => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={12}>
                                 <Box>
-                                    <Typography gutterBottom><b>TO</b></Typography>
+                                    <Typography gutterBottom><b>BILL TO:</b></Typography>
                                     <TextField
                                         select
                                         fullWidth

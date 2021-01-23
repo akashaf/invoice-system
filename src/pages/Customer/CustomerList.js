@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import customInstance from '../../axios.config';
-import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody, withStyles } from '@material-ui/core';
+import { Grid, Button, Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody, withStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import styles from './styles'
 import SectionHeader from '../General/SectionHeader';
+import AddIcon from '@material-ui/icons/Add';
 
 const CustomerList = (props) => {
   const [customerList, setCustomerList] = useState([]);
@@ -28,7 +29,7 @@ const CustomerList = (props) => {
       const tempData = {
         'custid': customer.custid,
         'custname': customer.custname,
-        'address': customer.mailingaddr1 +', '+ customer.mailingaddr2 +', '+ customer.mailingaddr3 +', '+ customer.mailingpostcode,
+        'address': customer.mailingaddr1 + ', ' + customer.mailingaddr2 + ', ' + customer.mailingaddr3 + ', ' + customer.mailingpostcode,
         'mailingstate': customer.mailingstate,
         'mailingdistrict': customer.mailingdistrict,
         'isactive': customer.isactive,
@@ -128,7 +129,26 @@ const CustomerList = (props) => {
 
   return (
     <Box>
-      <SectionHeader data="Customers" />
+      <Grid container>
+        <Grid item xs>
+          <SectionHeader data="Customers" />
+        </Grid>
+        <Grid item xs>
+          <Box style={{ textAlign: 'right' }}>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => history.push('/add-customer')}
+            >
+              <Typography>
+                New Customer
+              </Typography>
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
       <TableContainer>
         {list()}
       </TableContainer>

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import customInstance from '../../axios.config';
-import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody, withStyles } from '@material-ui/core';
+import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody, withStyles, Grid, Button } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import styles from '../Customer/styles';
 import SectionHeader from '../General/SectionHeader';
+import AddIcon from '@material-ui/icons/Add';
 
 const InvoiceList = (props) => {
   const [invoiceList, setInvoiceList] = useState([]);
@@ -53,7 +54,7 @@ const InvoiceList = (props) => {
     return (
       <Table size="small">
         <TableHead>
-        <TableRow className={classes.tableHeader}>
+          <TableRow className={classes.tableHeader}>
             {
               tableHeaders.map(tableHeader => (
                 <TableCell key={tableHeader}>
@@ -122,7 +123,26 @@ const InvoiceList = (props) => {
 
   return (
     <Box>
-      <SectionHeader data="Invoices" />
+      <Grid container>
+        <Grid item xs>
+          <SectionHeader data="Invoices" />
+        </Grid>
+        <Grid item xs>
+          <Box style={{ textAlign: 'right' }}>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => history.push('/invoice')}
+            >
+              <Typography>
+                New Invoice
+              </Typography>
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
       <TableContainer>
         {list()}
       </TableContainer>

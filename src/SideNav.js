@@ -3,36 +3,24 @@ import { Link } from 'react-router-dom';
 
 const links = [
     {
-        name: 'InvoiceList',
+        name: 'Invoices',
         path: '/',
     },
     {
-        name: 'AddInvoice',
-        path: '/invoice',
-    },
-    {
-        name: 'CustomerList',
+        name: 'Customers',
         path: '/customer',
     },
     {
-        name: 'AddCustomer',
-        path: '/add-customer',
-    },
-    {
-        name: 'stateList',
+        name: 'States',
         path: '/stateList',
     },
     {
-        name: 'AddState',
-        path: '/add-state',
-    },
-    {
-        name: 'DistrictList',
+        name: 'Districts',
         path: '/districtList',
     },
     {
-        name: 'AddDistrict',
-        path: '/add-district',
+        name: 'List of Invoice with Items',
+        path: '/invoice-listing-with-item',
     }
 ]
 

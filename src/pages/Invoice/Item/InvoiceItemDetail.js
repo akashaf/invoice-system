@@ -2,7 +2,7 @@ import { Box, Button, Grid, Paper, TextField, Typography, withStyles } from "@ma
 import { Save, RotateLeft, Delete } from '@material-ui/icons';
 import { useEffect, useState } from "react";
 import SectionHeader from "../../General/SectionHeader";
-import customInstance from '../../../axios.config';
+import axiosApi from '../../../axios.config';
 import styles from "../../Customer/styles";
 import moment from 'moment';
 import { useToasts } from 'react-toast-notifications';
@@ -20,7 +20,7 @@ const InvoiceItemDetail = (props) => {
     },[])
 
     const queryInvoiceItemDetail = () => {
-        customInstance.get(`/invoiceitem/${props.match.params.id}/${props.match.params.itemID}`)
+        axiosApi.get(`/invoiceitem/${props.match.params.id}/${props.match.params.itemID}`)
             .then(res => setInvoiceItemDetailData(res.data))
             .catch(err => console.log(err))
     }
@@ -30,7 +30,7 @@ const InvoiceItemDetail = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.put('/invoiceitem', invoiceItemDetailData)
+        axiosApi.put('/invoiceitem', invoiceItemDetailData)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true });
                 history.goBack();
@@ -48,7 +48,7 @@ const InvoiceItemDetail = (props) => {
     }
 
     const deleteInvoiceItem = () => {
-        customInstance.delete(`/invoiceitem/${props.match.params.id}/${props.match.params.itemID}`)
+        axiosApi.delete(`/invoiceitem/${props.match.params.id}/${props.match.params.itemID}`)
             .then(res => {
                 addToast('Delete Successfully', { appearance: 'success', autoDismiss: true });
                 history.goBack();

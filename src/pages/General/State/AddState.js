@@ -3,7 +3,7 @@ import { Save, RotateLeft } from '@material-ui/icons';
 import { useState } from 'react';
 import { addToast } from 'react-toast-notifications';
 import { useHistory } from 'react-router-dom';
-import customInstance from '../../../axios.config';
+import axiosApi from '../../../axios.config';
 import styles from '../../Customer/styles';
 import SectionHeader from '../SectionHeader';
 
@@ -18,7 +18,7 @@ const AddState = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.post('/state', stateData)
+        axiosApi.post('/state', stateData)
             .then(() => history.push('/stateList'))
             .catch(err => addToast(err.message, { appearance: 'error' }))
     }

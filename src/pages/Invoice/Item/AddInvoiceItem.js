@@ -2,7 +2,7 @@ import { Box, Button, Paper, Table, TableBody, TableCell, TableHead, TableRow, T
 import { Save, RotateLeft } from '@material-ui/icons';
 import { useEffect, useState } from "react";
 import moment from 'moment';
-import customInstance from '../../../axios.config';
+import axiosApi from '../../../axios.config';
 import { useToasts } from 'react-toast-notifications';
 import SectionHeader from '../../General/SectionHeader';
 import { useHistory } from 'react-router-dom';
@@ -17,7 +17,7 @@ const AddInvoiceItem = (props) => {
     const { classes } = props;
 
     useEffect(() => {
-        customInstance.get(`/invoiceitem/invoiceno/${props.id}`)
+        axiosApi.get(`/invoiceitem/invoiceno/${props.id}`)
             .then(res => setInvoiceItemData(res.data))
             .catch(err => addToast(err.message, { appearance: 'error' }))
         // eslint-disable-next-line
@@ -39,12 +39,12 @@ const AddInvoiceItem = (props) => {
         }
         invoiceItemDataPost.invono = props.id;
         invoiceItemDataPost.duedate = parseInt(moment().format('x'));
-        customInstance.post('/invoiceitem', invoiceItemDataPost)
+        axiosApi.post('/invoiceitem', invoiceItemDataPost)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true });
                 setInvoiceItemDataPost({});
                 evt.target.reset();
-                customInstance.get(`/invoiceitem/invoiceno/${props.id}`)
+                axiosApi.get(`/invoiceitem/invoiceno/${props.id}`)
                     .then(res => {
                         console.log(res);
                         setInvoiceItemData(res.data);

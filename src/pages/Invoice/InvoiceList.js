@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import customInstance from '../../axios.config';
+import axiosApi from '../../axios.config';
 import { Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody, withStyles, Grid, Button } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
@@ -18,7 +18,7 @@ const InvoiceList = (props) => {
   }, [])
 
   const queryInvoiceList = () => {
-    customInstance.get('/invoice')
+    axiosApi.get('/invoice')
       .then(res => { setInvoiceList(res.data); })
       .catch(err => console.log(err))
   }

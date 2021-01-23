@@ -1,13 +1,13 @@
 import { Box, Card, CardContent, Typography } from '@material-ui/core';
 import { useEffect, useState } from 'react';
-import customInstance from '../../axios.config';
+import axiosApi from '../../axios.config';
 import moment from 'moment';
 import SectionHeader from '../General/SectionHeader';
 
 const InvoiceListingWithItem = () => {
     const [invoiceListingWithItemData, setInvoiceListingWithItem] = useState([]);
     useEffect(() => {
-        customInstance.get('invoiceitem')
+        axiosApi.get('invoiceitem')
             .then(res => {
                 console.log(res.data);
                 setInvoiceListingWithItem(res.data);

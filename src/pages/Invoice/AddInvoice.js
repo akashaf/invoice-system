@@ -3,7 +3,7 @@ import { Save, RotateLeft } from '@material-ui/icons';
 import { useEffect, useState } from 'react';
 import { addToast } from 'react-toast-notifications';
 import { useHistory } from 'react-router-dom';
-import customInstance from '../../axios.config';
+import axiosApi from '../../axios.config';
 import moment from 'moment';
 import SectionHeader from '../General/SectionHeader';
 import styles from '../Customer/styles';
@@ -18,7 +18,7 @@ const AddInvoice = (props) => {
     const { classes } = props;
 
     useEffect(() => {
-        customInstance.get('/customer')
+        axiosApi.get('/customer')
             .then(res => setCustomerData(res.data))
             .catch(err => console.log(err))
     }, [])
@@ -34,13 +34,13 @@ const AddInvoice = (props) => {
 
     const handleCustomerData = evt => {
         setInvoiceData({ ...invoiceData, [evt.target.name]: evt.target.value })
-        customInstance.get(`/customer/${evt.target.value}`)
+        axiosApi.get(`/customer/${evt.target.value}`)
             .then(customer => {
                 setCustomerDetailData(customer.data)
-                customInstance.get(`/state/${customer.data.mailingstate}`)
+                axiosApi.get(`/state/${customer.data.mailingstate}`)
                     .then(customerDetail => {
                         setStateDetailData(customerDetail.data);
-                        customInstance.get(`/district/${customer.data.mailingdistrict}`)
+                        axiosApi.get(`/district/${customer.data.mailingdistrict}`)
                             .then(districtDetail => {
                                 setDistrictDetailData(districtDetail.data);
                             })
@@ -57,7 +57,7 @@ const AddInvoice = (props) => {
             return;
         }
         invoiceData.invodate = parseInt(moment().format('x'));
-        customInstance.post('/invoice', invoiceData)
+        axiosApi.post('/invoice', invoiceData)
             .then(invoice => {
                 setInvoiceData(invoice.data);
                 history.push(`/invoice-detail/${invoice.data.invono}`);

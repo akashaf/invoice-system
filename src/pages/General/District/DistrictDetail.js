@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Save, RotateLeft, Delete } from '@material-ui/icons';
-import customInstance from '../../../axios.config';
+import axiosApi from '../../../axios.config';
 import { Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, Paper, withStyles, MenuItem, Typography } from '@material-ui/core';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
@@ -17,14 +17,14 @@ const DistrictDetail = (props) => {
 
     useEffect(() => {
         queryDistrictDetail();
-        customInstance.get('/state')
+        axiosApi.get('/state')
             .then(res => setStateData(res.data))
             .catch(err => console.log(err))
         // eslint-disable-next-line
     }, [setDistrictData])
 
     const queryDistrictDetail = () => {
-        customInstance.get(`/district/${props.match.params.id}`)
+        axiosApi.get(`/district/${props.match.params.id}`)
             .then(res => setDistrictData(res.data))
             .catch(err => console.log(err))
     }
@@ -34,7 +34,7 @@ const DistrictDetail = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.put('/district', districtData)
+        axiosApi.put('/district', districtData)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true })
             })
@@ -56,7 +56,7 @@ const DistrictDetail = (props) => {
     }
 
     const deleteDistrict = () => {
-        customInstance.delete(`/district/${props.match.params.id}`)
+        axiosApi.delete(`/district/${props.match.params.id}`)
             .then(res => {
                 addToast('Delete Successfully', { appearance: 'success', autoDismiss: true });
                 history.push('/districtList');

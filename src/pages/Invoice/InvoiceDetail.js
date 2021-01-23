@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Save, RotateLeft, Delete } from '@material-ui/icons';
-import customInstance from '../../axios.config';
+import axiosApi from '../../axios.config';
 import { Box, withStyles, Typography, Grid, TextField, Button, MenuItem, Paper } from '@material-ui/core';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
@@ -20,7 +20,7 @@ const InvoiceDetail = (props) => {
 
     useEffect(() => {
         queryInvoiceDetail();
-        customInstance.get('/customer')
+        axiosApi.get('/customer')
             .then(customer => {
                 setCustomerData(customer.data);
             })
@@ -29,16 +29,16 @@ const InvoiceDetail = (props) => {
     }, [setInvoiceData])
 
     const queryInvoiceDetail = () => {
-        customInstance.get(`/invoice/${props.match.params.id}`)
+        axiosApi.get(`/invoice/${props.match.params.id}`)
             .then(res => {
                 setInvoiceData(res.data);
-                customInstance.get(`/customer/${res.data.custid}`)
+                axiosApi.get(`/customer/${res.data.custid}`)
                     .then(customer => {
                         setCustomerDetailData(customer.data);
-                        customInstance.get(`/state/${customer.data.mailingstate}`)
+                        axiosApi.get(`/state/${customer.data.mailingstate}`)
                             .then(state => {
                                 setStateDetailData(state.data);
-                                customInstance.get(`/district/${customer.data.mailingdistrict}`)
+                                axiosApi.get(`/district/${customer.data.mailingdistrict}`)
                                     .then(district => {
                                         setDistrictDetailData(district.data);
                                     })
@@ -53,13 +53,13 @@ const InvoiceDetail = (props) => {
 
     const handleCustomerData = evt => {
         setInvoiceData({ ...invoiceData, [evt.target.name]: evt.target.value })
-        customInstance.get(`/customer/${evt.target.value}`)
+        axiosApi.get(`/customer/${evt.target.value}`)
             .then(customer => {
                 setCustomerDetailData(customer.data)
-                customInstance.get(`/state/${customer.data.mailingstate}`)
+                axiosApi.get(`/state/${customer.data.mailingstate}`)
                     .then(customerDetail => {
                         setStateDetailData(customerDetail.data);
-                        customInstance.get(`/district/${customer.data.mailingdistrict}`)
+                        axiosApi.get(`/district/${customer.data.mailingdistrict}`)
                             .then(districtDetail => {
                                 setDistrictDetailData(districtDetail.data);
                             })
@@ -75,7 +75,7 @@ const InvoiceDetail = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.put('/invoice', invoiceData)
+        axiosApi.put('/invoice', invoiceData)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true })
             })
@@ -92,7 +92,7 @@ const InvoiceDetail = (props) => {
     }
 
     const deleteInvoice = () => {
-        customInstance.delete(`/invoice/${props.match.params.id}`)
+        axiosApi.delete(`/invoice/${props.match.params.id}`)
             .then(res => {
                 addToast('Delete Successfully', { appearance: 'success', autoDismiss: true });
                 history.push('/');

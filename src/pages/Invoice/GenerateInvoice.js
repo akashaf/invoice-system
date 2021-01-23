@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, withStyles } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import customInstance from "../../axios.config";
+import axiosApi from "../../axios.config";
 import styles from "../Customer/styles";
 import moment from 'moment';
 import { useHistory } from "react-router-dom";
@@ -22,16 +22,16 @@ const GenerateInvoice = (props) => {
     }, [])
 
     const queryInvoiceItem = () => {
-        customInstance.get(`/invoice/items/${props.match.params.id}`)
+        axiosApi.get(`/invoice/items/${props.match.params.id}`)
             .then(invoiceItem => {
                 setInvoiceItemDetailData(invoiceItem.data);
-                customInstance.get(`/customer/${invoiceItem.data.custid}`)
+                axiosApi.get(`/customer/${invoiceItem.data.custid}`)
                     .then(customerDetail => {
                         setCustomerDetailData(customerDetail.data);
-                        customInstance.get(`/state/${customerDetail.data.mailingstate}`)
+                        axiosApi.get(`/state/${customerDetail.data.mailingstate}`)
                             .then(stateDetail => {
                                 setStateDetailData(stateDetail.data);
-                                customInstance.get(`/district/${customerDetail.data.mailingdistrict}`)
+                                axiosApi.get(`/district/${customerDetail.data.mailingdistrict}`)
                                     .then(districtDetail => {
                                         setDistrictDetail(districtDetail.data);
                                     })

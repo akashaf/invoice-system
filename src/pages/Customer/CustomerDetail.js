@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Save, RotateLeft, Delete } from '@material-ui/icons';
-import customInstance from '../../axios.config';
+import axiosApi from '../../axios.config';
 import { withStyles, Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, Paper, MenuItem, Typography } from '@material-ui/core';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
@@ -18,17 +18,17 @@ const CustomerDetail = (props) => {
 
     useEffect(() => {
         queryCustomerDetail();
-        customInstance.get('/state')
+        axiosApi.get('/state')
             .then(res => setStateData(res.data))
             .catch(err => console.log(err))
-        customInstance.get('/district')
+        axiosApi.get('/district')
             .then(res => setDistrictData(res.data))
             .catch(err => console.log(err))
         // eslint-disable-next-line
     }, [setCustomerData])
 
     const queryCustomerDetail = () => {
-        customInstance.get(`/customer/${props.match.params.id}`)
+        axiosApi.get(`/customer/${props.match.params.id}`)
             .then(res => { setCustomerData(res.data); })
             .catch(err => console.log(err))
     }
@@ -38,7 +38,7 @@ const CustomerDetail = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.put('/customer', customerData)
+        axiosApi.put('/customer', customerData)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true })
             })
@@ -60,7 +60,7 @@ const CustomerDetail = (props) => {
     }
 
     const deleteCustomer = () => {
-        customInstance.delete(`/customer/${props.match.params.id}`)
+        axiosApi.delete(`/customer/${props.match.params.id}`)
             .then(res => {
                 addToast('Delete Successfully', { appearance: 'success', autoDismiss: true });
                 history.push('/customer');

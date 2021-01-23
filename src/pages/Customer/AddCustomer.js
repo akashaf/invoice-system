@@ -3,7 +3,7 @@ import { Save, RotateLeft } from '@material-ui/icons';
 import { useEffect, useState } from 'react';
 import { addToast } from 'react-toast-notifications';
 import { useHistory } from 'react-router-dom';
-import customInstance from '../../axios.config';
+import axiosApi from '../../axios.config';
 import styles from './styles';
 import SectionHeader from '../General/SectionHeader';
 
@@ -15,10 +15,10 @@ const AddCustomer = (props) => {
     const { classes } = props;
 
     useEffect(() => {
-        customInstance.get('/state')
+        axiosApi.get('/state')
             .then(res => setStateData(res.data))
             .catch(err => console.log(err))
-        customInstance.get('/district')
+        axiosApi.get('/district')
             .then(res => setDistrictData(res.data))
             .catch(err => console.log(err))
     }, [])
@@ -37,7 +37,7 @@ const AddCustomer = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.post('/customer', customerData)
+        axiosApi.post('/customer', customerData)
             .then(() => history.push('/customer'))
             .catch(err => addToast(err.message, { appearance: 'error' }))
     }

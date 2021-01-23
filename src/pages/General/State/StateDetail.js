@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Save, RotateLeft, Delete } from '@material-ui/icons';
-import customInstance from '../../../axios.config';
+import axiosApi from '../../../axios.config';
 import { Paper, Box, Grid, TextField, Button, FormGroup, FormControlLabel, Switch, withStyles, Typography } from '@material-ui/core';
 import { useToasts } from 'react-toast-notifications';
 import moment from 'moment';
@@ -21,7 +21,7 @@ const StateDetail = (props) => {
     }, [setStateData])
 
     const queryStateDetail = () => {
-        customInstance.get(`/state/${props.match.params.id}`)
+        axiosApi.get(`/state/${props.match.params.id}`)
             .then(res => { setStateData(res.data); })
             .catch(err => console.log(err))
     }
@@ -31,7 +31,7 @@ const StateDetail = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.put('/state', stateData)
+        axiosApi.put('/state', stateData)
             .then(res => {
                 addToast('Saved Successfully', { appearance: 'success', autoDismiss: true })
             })
@@ -53,7 +53,7 @@ const StateDetail = (props) => {
     }
 
     const deleteState = () => {
-        customInstance.delete(`/state/${props.match.params.id}`)
+        axiosApi.delete(`/state/${props.match.params.id}`)
             .then(res => {
                 addToast('Delete Successfully', { appearance: 'success', autoDismiss: true });
                 history.push('/stateList');

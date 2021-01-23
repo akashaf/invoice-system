@@ -3,7 +3,7 @@ import { Save, RotateLeft } from '@material-ui/icons';
 import { useEffect, useState } from 'react';
 import { addToast } from 'react-toast-notifications';
 import { useHistory } from 'react-router-dom';
-import customInstance from '../../../axios.config';
+import axiosApi from '../../../axios.config';
 import styles from '../../Customer/styles';
 import SectionHeader from '../SectionHeader';
 
@@ -14,7 +14,7 @@ const AddDistrict = (props) => {
     const { classes } = props;
 
     useEffect(() => {
-        customInstance.get('/state')
+        axiosApi.get('/state')
             .then(res => setStateData(res.data))
             .catch(err => console.log(err))
     }, [])
@@ -33,7 +33,7 @@ const AddDistrict = (props) => {
         if (!evt.target.checkValidity()) {
             return;
         }
-        customInstance.post('/district', districtData)
+        axiosApi.post('/district', districtData)
             .then(() => history.push('/districtList'))
             .catch(err => addToast(err.message, { appearance: 'error', autoDismiss: true }))
     }

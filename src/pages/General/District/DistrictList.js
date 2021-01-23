@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import customInstance from '../../../axios.config';
+import axiosApi from '../../../axios.config';
 import { Grid, Button, withStyles, Box, TableContainer, TableCell, Typography, TableHead, TableRow, Table, TableBody } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
@@ -19,7 +19,7 @@ const DistrictList = (props) => {
 
   const queryDistrictList = () => {
     let path = props && props.match.params.id ? `/district/state/${props.match.params.id}` : '/district'
-    customInstance.get(path)
+    axiosApi.get(path)
       .then(res => { setDistrictList(res.data); })
       .catch(err => console.log(err))
   }
